@@ -1,12 +1,12 @@
 import streamlit as st
-import pandas as pd  # Make sure to have pandas installed
+import pandas as pd
 import xml.etree.ElementTree as ET
 from io import StringIO
 
 # Custom anonymizeDF package (fictional placeholder)
 from anonymizeDF import anonymize_df
 
-def anonymize_element(element):
+def anonymize_xml_element(element, anonymized_df, idx):
     # Here, you can implement the anonymization logic for each element.
     # For simplicity, we'll just replace the element's text with "ANONYMIZED".
     try:
@@ -29,7 +29,7 @@ def anonymize_xml(xml_content):
 
     # Update the XML elements with anonymized data
     for idx, element in enumerate(root.iter()):
-        anonymize_element(element)
+        anonymize_xml_element(element, anonymized_df, idx)
 
     # Convert the updated XML back to a string
     output = StringIO()
