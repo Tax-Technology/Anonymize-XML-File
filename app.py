@@ -1,7 +1,7 @@
 import streamlit as st
 import faker
 import xmltodict
-import quopri
+import base64
 
 def anonymize_xml(xml_file):
     if xml_file is None:
@@ -27,8 +27,8 @@ def anonymize_xml(xml_file):
         st.error(e)
 
 def get_download_link(file_name, data):
-    qp = quopri.encodestring(data.encode("utf-8")).decode()
-    href = f'<a href="data:application/xml;base64,{qp}" download="{file_name}">Click here to download {file_name}</a>'
+    b64 = base64.b64encode(data).decode()
+    href = f'<a href="data:application/xml;base64,{b64}" download="{file_name}">Click here to download {file_name}</a>'
     return href
 
 def main():
