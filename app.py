@@ -27,7 +27,7 @@ def anonymize_xml(xml_file):
 
 def get_download_link(file_name, data):
     b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:application/xml;base64,{b64}" download="{file_name}">Click here to download {file_name}</a>'
+    href = f'<a href="data:application/xml;charset=utf-8;base64,{b64}" download="{file_name}">Click here to download {file_name}</a>'
     return href
 
 def main():
