@@ -1,7 +1,6 @@
 import streamlit as st
 import faker
 import xmltodict
-import io
 import base64
 
 def anonymize_xml(xml_file):
