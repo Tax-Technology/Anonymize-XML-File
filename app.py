@@ -1,7 +1,7 @@
 import streamlit as st
 import faker
 import xmltodict
-import base64
+import quopri
 
 def anonymize_xml(xml_file):
     if xml_file is None:
@@ -26,6 +26,11 @@ def anonymize_xml(xml_file):
     except Exception as e:
         st.error(e)
 
+def get_download_link(file_name, data):
+    qp = quopri.encodestring(data.encode("utf-8")).decode()
+    href = f'<a href="data:application/xml;base64,{qp}" download="{file_name}">Click here to download {file_name}</a>'
+    return href
+
 def main():
     st.title("XML Anonymizer")
 
@@ -35,18 +40,13 @@ def main():
         with st.spinner("Anonymizing XML..."):
             anonymized_data = anonymize_xml(xml_file)
 
-            # Encode the string as bytes
-            anonymized_data_bytes = anonymized_data.encode("utf-8")
+            if anonymized_data is not None:
+                anonymized_data_bytes = anonymized_data.encode("utf-8")
 
-            # Create a link to download the file
-            st.markdown(get_download_link(anonymized_data_bytes, "anonymized.xml"), unsafe_allow_html=True)
+                # Create a link to download the file
+                st.markdown(get_download_link(file_name="anonymized.xml", data=anonymized_data_bytes), unsafe_allow_html=True)
     else:
         st.error("Please upload an XML file.")
-
-def get_download_link(data, file_name):
-    b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:application/xml;base64,{b64}" download="{file_name}">Click here to download {file_name}</a>'
-    return href
 
 if __name__ == "__main__":
     main()
