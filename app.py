@@ -19,6 +19,9 @@ def anonymize_xml(xml_file):
             elif isinstance(value, list):
                 for index, item in enumerate(value):
                     value[index] = faker_instance.text()
+            elif isinstance(value, dict):
+                for key, subvalue in value.items():
+                    value[key] = faker_instance.text()
 
         anonymized_xml = xmltodict.unparse(data)
         return anonymized_xml
