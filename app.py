@@ -8,8 +8,7 @@ def anonymize_xml(xml_file):
         return None
 
     try:
-        with open(xml_file, "r") as f:
-            xml_data = f.read()
+        xml_data = xml_file.read()  # Read the contents of the uploaded file
 
         data = xmltodict.parse(xml_data)
 
