@@ -13,20 +13,23 @@ def anonymize_xml(xml_file):
         data = xmltodict.parse(xml_data)
 
         faker_instance = faker.Faker()
-        for key, value in data.items():
-            if isinstance(value, str):
-                data[key] = faker_instance.text()
-            elif isinstance(value, list):
-                for index, item in enumerate(value):
-                    value[index] = faker_instance.text()
-            elif isinstance(value, dict):
-                for key, subvalue in value.items():
-                    value[key] = faker_instance.text()
+        _anonymize_node(data, faker_instance)
 
         anonymized_xml = xmltodict.unparse(data)
         return anonymized_xml
     except Exception as e:
         st.error(e)
+
+def _anonymize_node(node, faker_instance):
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if isinstance(value, str):
+                node[key] = faker_instance.text() if not key.startswith('@') else value
+            elif isinstance(value, list):
+                for item in value:
+                    _anonymize_node(item, faker_instance)
+            elif isinstance(value, dict):
+                _anonymize_node(value, faker_instance)
 
 def get_download_link(file_name, data):
     b64_encoded_data = base64.b64encode(data).decode()
