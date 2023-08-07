@@ -2,6 +2,7 @@ import streamlit as st
 import faker
 import xmltodict
 import io
+import base64
 
 def anonymize_xml(xml_file):
     if xml_file is None:
@@ -32,23 +33,20 @@ def main():
     xml_file = st.file_uploader("Upload XML file")
 
     if xml_file is not None:
-        with st.progress(0):
+        with st.spinner("Anonymizing XML..."):
             anonymized_data = anonymize_xml(xml_file)
-            st.progress(50)
 
             # Encode the string as bytes
             anonymized_data_bytes = anonymized_data.encode("utf-8")
 
             # Create a link to download the file
             st.markdown(get_download_link(anonymized_data_bytes, "anonymized.xml"), unsafe_allow_html=True)
-
-            st.progress(100)
     else:
         st.error("Please upload an XML file.")
 
 def get_download_link(data, file_name):
     b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:file/txt;base64,{b64}" download="{file_name}">Click here to download {file_name}</a>'
+    href = f'<a href="data:application/xml;base64,{b64}" download="{file_name}">Click here to download {file_name}</a>'
     return href
 
 if __name__ == "__main__":
