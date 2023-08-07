@@ -32,15 +32,14 @@ def main():
 
     if xml_file is not None:
         with st.progress(0):
-            try:
-                anonymized_data = anonymize_xml(xml_file)
-                st.progress(50)
+            anonymized_data = anonymize_xml(xml_file)
+            st.progress(50)
 
-                st.download_button("Download Anonymized XML", data=anonymized_data, file_name="anonymized.xml")
+            st.download_button("Download Anonymized XML", data=anonymized_data, file_name="anonymized.xml")
 
-                st.progress(100)
-            except Exception as e:
-                st.error(e)
+            st.progress(100)
+    else:
+        st.error("Please upload an XML file.")
 
 if __name__ == "__main__":
     main()
