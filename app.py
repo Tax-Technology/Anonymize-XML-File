@@ -21,6 +21,12 @@ def anonymize_xml(xml_file):
                     value[index] = faker_instance.text()
 
         anonymized_xml = xmltodict.unparse(data)
+
+        # Check if the anonymized data is a binary file
+        if not isinstance(anonymized_xml, bytes):
+            # Convert the anonymized data to a binary file
+            anonymized_xml = anonymized_xml.encode('utf-8')
+
         return anonymized_xml
     except Exception as e:
         st.error(e)
