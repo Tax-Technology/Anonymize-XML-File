@@ -1,50 +1,43 @@
 import streamlit as st
-import pandas as pd
-import xml.etree.ElementTree as ET
-from io import StringIO
-from faker import Faker
+import faker
+import xmltodict
 
-def anonymize_xml_element(element, idx):
-    fake = Faker()
-    original_text = element.text
-    fake_text = fake.text(max_nb_chars=len(original_text))
-    element.text = fake_text
+def anonymize_xml(xml_file):
+    try:
+        with open(xml_file, "r") as f:
+            xml_data = f.read()
 
-def anonymize_xml(xml_content):
-    tree = ET.ElementTree(ET.fromstring(xml_content))
-    root = tree.getroot()
+        data = xmltodict.parse(xml_data)
 
-    for idx, element in enumerate(root.iter()):
-        try:
-            anonymize_xml_element(element, idx)
-        except Exception as e:
-            print(e)
+        faker_instance = faker.Faker()
+        for key, value in data.items():
+            if isinstance(value, str):
+                data[key] = faker_instance.text()
+            elif isinstance(value, list):
+                for index, item in enumerate(value):
+                    value[index] = faker_instance.text()
 
-    output = StringIO()
-    tree.write(output, encoding="unicode")
-    return output.getvalue()
+        anonymized_xml = xmltodict.unparse(data)
+        return anonymized_xml
+    except Exception as e:
+        st.error(e)
 
 def main():
-    st.title("XML Data Anonymizer")
-    st.write("Upload an XML file below and click the 'Anonymize' button to remove sensitive data.")
-    
-    uploaded_file = st.file_uploader("Upload XML File", type=["xml"])
+    st.title("XML Anonymizer")
 
-    if uploaded_file is not None:
-        xml_content = uploaded_file.read()
+    xml_file = st.file_uploader("Upload XML file")
 
-        if st.button("Anonymize"):
+    if xml_file is not None:
+        with st.progress(0):
             try:
-                anonymized_xml = anonymize_xml(xml_content)
+                anonymized_data = anonymize_xml(xml_file)
+                st.progress(50)
+
+                st.download_button("Download Anonymized XML", data=anonymized_data, file_name="anonymized.xml")
+
+                st.progress(100)
             except Exception as e:
                 st.error(e)
-
-            st.download_button(
-                "Download Anonymized XML",
-                data=anonymized_xml,
-                file_name="anonymized.xml",
-                mime="text/xml",
-            )
 
 if __name__ == "__main__":
     main()
