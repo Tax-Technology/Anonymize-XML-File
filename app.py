@@ -3,6 +3,9 @@ import faker
 import xmltodict
 
 def anonymize_xml(xml_file):
+    if xml_file is None:
+        return None
+
     try:
         with open(xml_file, "r") as f:
             xml_data = f.read()
